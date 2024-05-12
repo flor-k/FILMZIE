@@ -28,7 +28,31 @@
  - Tenes la libertad de utilizar la librería que quieras para realizarlo.
  - Subir a GitHub el script trabajado junto con un archivo de los resultados que se obtienen al correr el script creado (JSON, xlsx, csv, etc).
 
-## NOTAS
+## Notas
+ - No se grabando todos los metadatos para no sobrecargar los archivos ni la base de datos. La estructura actual de metadatos que se graba por cada contenido audiovisual (pelicula o serie) es la siguiente:
+   ```
+    {
+     "duration": int,  # En minutos
+     "titulo": str,
+     "categorias": list:str,
+     "anio": str,  # No utilizo la ñ para evitar conflictos de codificación
+     "sinopsis": str,
+     "actores": list:str,
+     "directores": list:str,
+     "studio": str,
+     "tipo": "TV_SHOW" o "MOVIE", #str
+     "videoId": str,   #None en caso de ser una serie
+     "links": list:{"file":str}, #None en caso de ser una serie
+     "temporadas": list:{    #None en caso de ser una pelicula
+        "titulo": str,
+        "episodios": list:{
+            "titulo": str,
+            "videoId": str,
+            "links": list:{"file": str}, 
+          }
+      }
+    }
+   ```
  - Se entregan 2 scripts.
     - ScriptAPI.py : Este es el script que funciona y cumple con los requisitos solicitados. 
         - En mi computadora tarda alrededor de 2 min en obtener la informacion del API, generar el json de forma local y grabar toda la informacion en una lista AUDIOVISUALES de MongoDB
@@ -46,12 +70,13 @@
 
  - Se entrega un archivo .json con los resultados.
 
-## MODELO DE NEGOCIO
+## Modelo de negocio
    - Es una pagina que parece ofrecer contenido legal (video on demand con publicidad).
    - Intenta ofrecer al usuario final una experiencia de navegación similar a las aplicaciones de streaming como netflix.
    - Se sustenta economicamente a base de publicidad invasiva.
    - Contiene un conjunto de peliculas, series y cortos (contenido audiovisual) que no suele encontrarse en los canales de streaming convencionales.
    - Los datos de los usuarios son compartidos con productores, autores y/o estudios de las peliculas/series junto con estadisticas de las mismas (ejemplo: review de la pelicula, clicks en una pelicula, etc).
 
-
+## Tiempo de ejecucion
+scriptAPI.py: 2 minutos.
 
