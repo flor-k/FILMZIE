@@ -26,20 +26,25 @@
 
 ## Requisitos:    
  - Tenes la libertad de utilizar la librería que quieras para realizarlo.
- - Subir a GitHub el script trabajado junto con un archivo de los resultados que se obtienen al correr el script creado (JSON, xlsx, csv, etc)
+ - Subir a GitHub el script trabajado junto con un archivo de los resultados que se obtienen al correr el script creado (JSON, xlsx, csv, etc).
 
 ## NOTAS
- - Se entregan 2 scripts
+ - Se entregan 2 scripts.
     - ScriptAPI.py : Este es el script que funciona y cumple con los requisitos solicitados. 
         - En mi computadora tarda alrededor de 2 min en obtener la informacion del API, generar el json de forma local y grabar toda la informacion en una lista AUDIOVISUALES de MongoDB
-        - Utiliza para el scraping el mismo API que usa la pagina
-        - Para grabar en la base de datos utiliza el string de conexion de un archivo .env (nombre de variable *DATABASE_CONNECTION_STRING*)
-        - Los metadatos de las peliculas y series se obtienen de forma secuencial
-        - Los metadatos de los archivos para streaming se obtienen en paralelo con 5 hilos
+        - Utiliza para el scraping el mismo API que usa la pagina.
+        - Para grabar en la base de datos utiliza el string de conexion de un archivo .env (nombre de variable *DATABASE_CONNECTION_STRING*).
+        - Los metadatos de las peliculas y series se obtienen de forma secuencial.
+        - Los metadatos de los archivos para streaming se obtienen en paralelo con 5 hilos.
 
-    - ScriptBot.py : Este script no esta completo pero sirve para mostrar como se podria hacer el scraping utilizando selenium. Es mucho mas lento (aprox 5 horas, sin la metada de los episodios), suele ser la unica alternativa cuando la web no tiene un API publica.
+    - ScriptBot.py : Este script no esta completo pero sirve para mostrar como se podria hacer el scraping utilizando selenium.
+        - Es mucho mas lento (aprox 5 horas, sin la metada de los episodios).
+        - Utilizar bots que simulen el comportamiento de un usuario en un navegador suele ser la unica alternativa cuando la web no tiene un API publica.
+        - En este caso scriptBot.py espera entre uno y dos segundos para tratar de simular un compartamiento humano (tambien se podria simular el movimiento del mouse, etc) debido a que muchas paginas pueden llegar a bloquear las conexiones cuando detectan un bot de scraping.
+        - Tambien se podria usar proxys para prevenir bloqueos de IP.
 
- - Se entrega un archivo .json con los resultados
+
+ - Se entrega un archivo .json con los resultados.
 
 ## MODELO DE NEGOCIO
    - Es una pagina que parece ofrecer contenido legal (video on demand con publicidad).
