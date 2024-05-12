@@ -28,7 +28,7 @@
  - Tenes la libertad de utilizar la librería que quieras para realizarlo.
  - Subir a GitHub el script trabajado junto con un archivo de los resultados que se obtienen al correr el script creado (JSON, xlsx, csv, etc)
 
-# NOTAS
+## NOTAS
  - Se entregan 2 scripts
     - ScriptAPI.py : Este es el script que funciona y cumple con los requisitos solicitados. 
         - En mi computadora tarda alrededor de 2 min en obtener la informacion del API, generar el json de forma local y grabar toda la informacion en una lista AUDIOVISUALES de MongoDB
@@ -41,11 +41,11 @@
 
  - Se entrega un archivo .json con los resultados
 
-# MODELO DE NEGOCIO
-    - Es una pagina que parece ser de contenido pirata.
-    - Intenta ofrecer una experiencia de navegación similar a las aplicaciones de streaming como netflix.
-    - Se sustenta economicamente a base de publicidad invasiva.
-    - Posiblemente venda los datos de los usuarios (ejemplo: mail).
+## MODELO DE NEGOCIO
+   - Es una pagina que parece ser de contenido pirata.
+   - Intenta ofrecer una experiencia de navegación similar a las aplicaciones de streaming como netflix.
+   - Se sustenta economicamente a base de publicidad invasiva.
+   - Posiblemente venda los datos de los usuarios (ejemplo: mail).
 
 
 
