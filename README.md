@@ -42,10 +42,11 @@
  - Se entrega un archivo .json con los resultados
 
 ## MODELO DE NEGOCIO
-   - Es una pagina que parece ser de contenido pirata.
-   - Intenta ofrecer una experiencia de navegación similar a las aplicaciones de streaming como netflix.
+   - Es una pagina que parece ofrecer contenido legal (video on demand con publicidad).
+   - Intenta ofrecer al usuario final una experiencia de navegación similar a las aplicaciones de streaming como netflix.
    - Se sustenta economicamente a base de publicidad invasiva.
-   - Posiblemente venda los datos de los usuarios (ejemplo: mail).
+   - Contiene un conjunto de peliculas, series y cortos (contenido audiovisual) que no suele encontrarse en los canales de streaming convencionales.
+   - Los datos de los usuarios son compartidos con productores, autores y/o estudios de las peliculas/series junto con estadisticas de las mismas (ejemplo: review de la pelicula, clicks en una pelicula, etc).
 
 
 
