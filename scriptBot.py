@@ -3,7 +3,14 @@ from selenium.webdriver.common.by import By
 import time
 import numpy
 from pymongo import MongoClient
-coneccionAlServidor = MongoClient('mongodb+srv://florenciakania:t4qZNfRKr15A1trN@bbmedia.nr51bnq.mongodb.net/?retryWrites=true&w=majority&appName=BBMedia')
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+DATABASE_CONNECTION_STRING = os.environ['DATABASE_CONNECTION_STRING']
+
+coneccionAlServidor = MongoClient(DATABASE_CONNECTION_STRING)
 db = coneccionAlServidor['FILMZIE']  #accedo a la base de datos FILMZIE
 coll = db['audiovisuales'] #accedo a la coleccion de peliculas
 
