@@ -8,7 +8,7 @@ import os
 
 
 load_dotenv()
-DATABASE_CONNECTION_STRING = os.environ[DATABASE_CONNECTION_STRING]
+DATABASE_CONNECTION_STRING = os.environ['DATABASE_CONNECTION_STRING']
 
 coneccionAlServidor = MongoClient(DATABASE_CONNECTION_STRING)
 db = coneccionAlServidor['FILMZIE']  #accedo a la base de datos FILMZIE
