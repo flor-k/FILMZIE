@@ -29,7 +29,7 @@
  - Subir a GitHub el script trabajado junto con un archivo de los resultados que se obtienen al correr el script creado (JSON, xlsx, csv, etc).
 
 ## Notas
- - No se grabando todos los metadatos para no sobrecargar los archivos ni la base de datos. La estructura actual de metadatos que se graba por cada contenido audiovisual (pelicula o serie) es la siguiente:
+ - No se grabaro todos los metadatos para no sobrecargar los archivos ni la base de datos. La estructura actual de metadatos que se graba por cada contenido audiovisual (pelicula o serie) es la siguiente:
    ```
     {
      "duration": int,  # En minutos
