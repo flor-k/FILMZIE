@@ -26,9 +26,24 @@ linksTodasLasPeliculas = []
 
 
 class Audiovisual:
-    def __init__(self, titulo, año, duracion, categorias, sinopsis, link, esPelicula, esSerie):
+    """representa un elemento audiovisual
+    """
+    def __init__(self, titulo:str, anio:str, duracion:str, categorias:list, sinopsis:str, link:list, esPelicula:bool, esSerie:bool):
+        """_summary_
+
+        Args:
+            titulo (str): titulo del audiovisual
+            anio (str): año del audiovisual, le saque la ñ para evitar problemas de caracteres
+            duracion (str): duracion del audiovisual
+            categorias (list): categorias del audiovisual
+            sinopsis (str): sinopsis del audiovisual
+            link (list): link del audiovisual
+            esPelicula (bool): define con un boolean si es una pelicula
+            esSerie (bool): define con un boolean si es una serie
+        """
+
         self.titulo = titulo
-        self.año = año
+        self.anio = anio
         self.duracion  = duracion
         self.categorias = categorias.split(',')
         self.sinopsis  = sinopsis
@@ -37,8 +52,10 @@ class Audiovisual:
         self.esSerie = esSerie
     
     def obtenerDocumento(self):
+        """define la estructura de un documento
+        """
         return {"titulo" : self.titulo,
-                "año" : self.año,
+                "anio" : self.anio,
                 "duracion"  : self.duracion,
                 "categorias" : self.categorias,
                 "sinopsis"  : self.sinopsis,
@@ -90,7 +107,7 @@ def obtenerDatosPelicula(url):
     pausa()
     if(esUnaSerie()):
         titulo = driver.find_element(By.CSS_SELECTOR, "h1.title").get_attribute('innerText')
-        año = driver.find_element(By.CSS_SELECTOR, 'span.year').get_attribute('innerText')
+        anio = driver.find_element(By.CSS_SELECTOR, 'span.year').get_attribute('innerText')
         duracion = None
         categorias = driver.find_element(By.CSS_SELECTOR, 'span.category').get_attribute('innerText')
         sinopsis = driver.find_element(By.CSS_SELECTOR, 'p.fs-18').get_attribute('innerText')
@@ -100,7 +117,7 @@ def obtenerDatosPelicula(url):
 
     else:
         titulo = driver.find_element(By.CSS_SELECTOR, "h1.title").get_attribute('innerText')
-        año = driver.find_element(By.CSS_SELECTOR, 'span.year').get_attribute('innerText')
+        anio = driver.find_element(By.CSS_SELECTOR, 'span.year').get_attribute('innerText')
         duracion = driver.find_element(By.CSS_SELECTOR, 'span.duration').get_attribute('innerText')
         categorias = driver.find_element(By.CSS_SELECTOR, 'span.category').get_attribute('innerText')
         sinopsis = driver.find_element(By.CSS_SELECTOR, 'p.fs-18').get_attribute('innerText')
@@ -112,7 +129,7 @@ def obtenerDatosPelicula(url):
             link = None
         esPelicula = True
         esSerie = False
-    audivoisual = Audiovisual(titulo = titulo, año = año, duracion = duracion, categorias = categorias, sinopsis = sinopsis, link = link, esPelicula = esPelicula, esSerie = esSerie)
+    audivoisual = Audiovisual(titulo = titulo, anio = anio, duracion = duracion, categorias = categorias, sinopsis = sinopsis, link = link, esPelicula = esPelicula, esSerie = esSerie)
 
     return audivoisual
 
