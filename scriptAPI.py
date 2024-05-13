@@ -92,7 +92,7 @@ def principal():
 
             offset += limit
             print('cargando pagina', 'offset:{} - limit:{} - documentosCreados:{}'.format(str(offset), str(limit), str(len(listaDocumentos))))
-
+        break
 
 async def conseguirLinks(listaDocumentosTodos):
     """
@@ -134,6 +134,9 @@ async def get(documento, session):
     except Exception as e:
         print("No se pudo obtener la url {} debido a {}.".format(url, e.__class__))
     
+
+
+
 def crearSublistas(listas, n):
     """Divide la lista de Audiovisuales en chunks de 100
 
@@ -164,13 +167,14 @@ with open('resultado_'+inicioStr+'.json', 'w') as f:
 
 print(' - Archivo resultado_{}.json creado'.format(inicioStr))
 
-subListas = crearSublistas(listaDocumentosTodos, chunksLista)
+subListas = crearSublistas(listaDocumentosTodos, chunksLista) #Creo las sublistas de audiovisuales
 cantidadDocumentos = len(listaDocumentosTodos)
 documentosInsertados = 0
 
 print('Insertando documentos en base de datos...')
 
 for subLista in subListas:
+    #voy insertando los metadatos en mongoDB de a chunks
     print('  - Insertando {} / {}'.format(str(len(subLista) + documentosInsertados), str(cantidadDocumentos)))
     coll.insert_many(subLista)
     documentosInsertados = documentosInsertados + len(subLista)
