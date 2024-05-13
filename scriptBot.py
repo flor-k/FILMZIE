@@ -5,7 +5,7 @@ import numpy
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
-
+from datetime import datetime
 
 load_dotenv()
 DATABASE_CONNECTION_STRING = os.environ['DATABASE_CONNECTION_STRING']
@@ -173,7 +173,7 @@ def obtenerTemporadas():
 
 
 
-
+inicio = datetime.now()
 #obtiene todos los links de cada categoria
 linksCategorias = obtenerLinksCategorias()
 for linkCategoria in linksCategorias:
@@ -184,4 +184,9 @@ for linkCategoria in linksCategorias:
     #inserta la lista de peliculas en la base de datos
     insertarPeliculasEnBaseDatos(peliculasCategoria)
  
+fin = datetime.now()
+print('Tiempos de ejecucion:')
+print(' - Inicio: {}'.format(inicio))
+print(' - Fin:    {}'.format(fin))
+print(' - Tiempo: {}'.format(fin - inicio))
     
