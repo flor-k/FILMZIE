@@ -59,7 +59,7 @@
         - Utiliza para el scraping el mismo API que usa la pagina.
         - Para grabar en la base de datos utiliza el string de conexion de un archivo .env (nombre de variable *DATABASE_CONNECTION_STRING*).
         - Los metadatos de las peliculas y series se obtienen de forma secuencial.
-        - Los metadatos de los archivos para streaming se obtienen en paralelo con 5 hilos.
+        - Los metadatos de los archivos para streaming se obtienen en paralelo.
 
     - ScriptBot.py : Este script no esta completo pero sirve para mostrar como se podria hacer el scraping utilizando selenium.
         - Es mucho mas lento (aprox 5 horas, sin la metada de los episodios).

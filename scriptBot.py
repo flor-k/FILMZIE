@@ -3,11 +3,11 @@ from selenium.webdriver.common.by import By
 import time
 import numpy
 from pymongo import MongoClient
-from dotenv import load_dotenv
+from dotenv import main
 import os
 from datetime import datetime
 
-load_dotenv()
+main.load_dotenv()
 DATABASE_CONNECTION_STRING = os.environ['DATABASE_CONNECTION_STRING']
 
 coneccionAlServidor = MongoClient(DATABASE_CONNECTION_STRING)
@@ -24,7 +24,7 @@ driver.get(url)
 ##Lista de los links de todas las peliculas que se recorrieron
 linksTodasLasPeliculas = []
 
-
+#Definicion de Audiovisual como Clase
 class Audiovisual:
     """representa un elemento audiovisual
     """
@@ -64,10 +64,15 @@ class Audiovisual:
                 "esSerie" : self.esSerie}
                 
  
-
+#Inicio de definicion de funciones
         
 
 def obtenerLinksCategorias():
+    """Obtiene los links de todas las categorias
+
+    Returns:
+        list: links de todas las categorias
+    """
     burger = driver.find_element(By.CSS_SELECTOR, "button.category-burger")
     burger.click()
     pausa()
@@ -80,6 +85,14 @@ def obtenerLinksCategorias():
     return linksRetornados
 
 def obtenerLinksPeliculas(url):
+    """obtiene los links para cada pelicula de la categoria
+
+    Args:
+        url (str): link de una categoria
+
+    Returns:
+        list: lista con los links de las peliculas
+    """
     driver.get(url)
     pausa()
     scrollAlFinal()
@@ -89,6 +102,8 @@ def obtenerLinksPeliculas(url):
         linksRetornados.append(link.get_attribute('href'))
     return linksRetornados
 
+
+#Funcion para scrollear hasta el final de la pagina ya que la misma carga dinamicamente
 def scrollAlFinal():
     while True:
         driver.execute_script("window.scrollBy(0,1000)")
@@ -96,13 +111,23 @@ def scrollAlFinal():
         bottom = driver.execute_script('return window.innerHeight + window.pageYOffset >= document.body.scrollHeight')
         if bottom:
             break
-        
+
+#Genera una pausa para simular el tiempo de espera de una persona, ademas de que permite darle tiempo a la pagina para cargar        
 def pausa():
     time.sleep(1 + numpy.random.uniform(0,1))
 
 
 
 def obtenerDatosPelicula(url):
+    """Obtiene los datos solicitados de las peliculas y series
+
+    Args:
+        url (str): se pasa la url de una pelicula o serie
+
+    Returns:
+        Audiovisual: objeto audiovisual
+    """
+
     driver.get(url)
     pausa()
     if(esUnaSerie()):
@@ -129,16 +154,25 @@ def obtenerDatosPelicula(url):
             link = None
         esPelicula = True
         esSerie = False
-    audivoisual = Audiovisual(titulo = titulo, anio = anio, duracion = duracion, categorias = categorias, sinopsis = sinopsis, link = link, esPelicula = esPelicula, esSerie = esSerie)
+    audiovisual = Audiovisual(titulo = titulo, anio = anio, duracion = duracion, categorias = categorias, sinopsis = sinopsis, link = link, esPelicula = esPelicula, esSerie = esSerie)
 
-    return audivoisual
+    return audiovisual
 
     
 
 def scrapingLinksPeliculas(linksPeliculas):
+    """verifica que las peliculas no esten repetidas antes de hacer el scraping,
+    luego obtiene los datos de la misma.
+
+    Args:
+        linksPeliculas (list): una lista con todos los links a las peliculas o series
+
+    Returns:
+        list:Audiovisual: devuelve todas las peliculas de la categoria
+    """
     peliculasCategoria:list[Audiovisual] = []
     for linkPelicula in linksPeliculas:
-        encontrado = linkPelicula in linksTodasLasPeliculas
+        encontrado = linkPelicula in linksTodasLasPeliculas #Me aseguro de no tener el link de la pelicula repetido para no subirlo dos veces a la base de datos
         if not encontrado:
             pelicula:Audiovisual = obtenerDatosPelicula(linkPelicula)
             linksTodasLasPeliculas.append(linkPelicula)
@@ -148,6 +182,11 @@ def scrapingLinksPeliculas(linksPeliculas):
 
 
 def insertarPeliculasEnBaseDatos(peliculasCategoria:list[Audiovisual]):
+    """inserta los datos de cada audiovisual en la base de datos
+
+    Args:
+        peliculasCategoria (list[Audiovisual]): posee una lista con un objeto Audiovisual que contiene los datos de cada audiovisual
+    """
     if(len(peliculasCategoria)>0): #nos aseguramos de tener peliculas en la categoria para que no falle MongoDB por insertar una lista vacia
         documentosDePeliculas:list[object] = []
         for pelicula in peliculasCategoria:
@@ -156,6 +195,11 @@ def insertarPeliculasEnBaseDatos(peliculasCategoria:list[Audiovisual]):
 
 
 def esUnaSerie():
+    """define si un audiovisual es o no una serie dependiendo si tiene el boton de temporadas
+
+    Returns:
+        boolean
+    """
     try:
         driver.find_element(By.CSS_SELECTOR, 'div.select-alternative button.select-trigger')
         return True
@@ -163,15 +207,8 @@ def esUnaSerie():
         return False
 
 
-def obtenerTemporadas():
-    driver.find_element(By.CSS_SELECTOR,'button.select-trigger').click()
-    temporadas = driver.find_elements(By.CSS_SELECTOR,'div.select-content button.text-white span').__getattribute__('innerText')
-    return temporadas
 
-
-
-
-
+#Inicio de ejecucion
 
 inicio = datetime.now()
 #obtiene todos los links de cada categoria
@@ -190,3 +227,4 @@ print(' - Inicio: {}'.format(inicio))
 print(' - Fin:    {}'.format(fin))
 print(' - Tiempo: {}'.format(fin - inicio))
     
+#Fin de ejecucion
