@@ -124,25 +124,34 @@ async def main(listaDocumentosTodos):
     async with aiohttp.ClientSession() as session:
         await asyncio.gather(*(get(documento, session) for documento in listaDocumentosTodos))
 
+
 asyncio.run(main(listaDocumentosTodos))
+
 
 print('Creando archivo resultado_{}.json...'.format(inicioStr))
 with open('resultado_'+inicioStr+'.json', 'w') as f:
     json.dump(listaDocumentosTodos, f)
 print(' - Archivo resultado_{}.json creado'.format(inicioStr))
 
+
 def crearSublistas(listas, n):
     for i in range(0, len(listas), n):
         yield listas[i:i + n]
 
+
 subListas = crearSublistas(listaDocumentosTodos, chunksLista)
 cantidadDocumentos = len(listaDocumentosTodos)
 documentosInsertados = 0
+
 print('Insertando documentos en base de datos...')
+
+
 for subLista in subListas:
     print('  - Insertando {} / {}'.format(str(len(subLista) + documentosInsertados), str(cantidadDocumentos)))
     coll.insert_many(subLista)
     documentosInsertados = documentosInsertados + len(subLista)
+
+    
 print(' - Todos los documentos se insertaron en la base de datos')
 
 fin = datetime.now()
