@@ -7,27 +7,22 @@ import aiohttp
 from dotenv import main
 import os
 
-#Inicia definicio de variables
-
+#Inicia definicion de variables
 
 main.load_dotenv()
-DATABASE_CONNECTION_STRING = os.environ['DATABASE_CONNECTION_STRING']
-inicio = datetime.now()
-inicioStr = str(datetime.now().isoformat().replace(':','_'))
+DATABASE_CONNECTION_STRING = os.environ['DATABASE_CONNECTION_STRING'] # obtengo el string de conexion a mongodb
+inicio = datetime.now() # fecha de inicio para poder calcular el tiempo de ejecucion
+inicioStr = str(datetime.now().isoformat().replace(':','_')) # fecha de inicio en forma de str para concatenar a los archivos generados
 coneccionAlServidor = MongoClient(DATABASE_CONNECTION_STRING)
 db = coneccionAlServidor['FILMZIE']  #accedo a la base de datos FILMZIE
-coll = db['audiovisuales2'] #accedo a la coleccion de peliculas
-documentosConLinksCargados = 0
-
-url = "https://filmzie.com/api/v1/content?"
-
-
-listaDocumentosTodos = [] # contiene 1 documento por cada pelicula o serie. 
+coll = db['audiovisuales'] #accedo a la coleccion de audiovisuales (conceptualmente un audiovisual es una pelicula o una serie)
+url = "https://filmzie.com/api/v1/content?" #url del api para obtener las peliculas y series de forma paginada.
 chunksLista = 100
+listaDocumentosTodos = [] # variable global. Contiene 1 documento por cada pelicula o serie. 
 
 #Inicia definicio de funciones
 
-def principal():
+def obtenerMetadataDelApi():
     """
     obtengo la data de la API y guardo cada metadato en Documento exceptuando el link
     """
@@ -88,6 +83,7 @@ def principal():
                     print('error al obtener DATOS de una pelicula ',error)
                     with open(str('error_'+inicioStr+'.json'), 'a') as f:
                         json.dump(audiovisual, f)
+                        f.close()
 
             offset += limit
             print('cargando pagina', 'offset:{} - limit:{} - documentosCreados:{}'.format(str(offset), str(limit), str(len(listaDocumentos))))
@@ -95,10 +91,10 @@ def principal():
 
 async def conseguirLinks(listaDocumentosTodos):
     """
-    Consigo los links para cada Documento (pelicula y cada episodio) pasando por el get de forma paralela
+    Obtiene los links para cada Documento (sea pelicula o serie) de forma paralela
 
     Args:
-        listaDocumentosTodos (list): lista con todos los Documentos
+        listaDocumentosTodos (list[object]): lista con todos los Documentos
     """
     async with aiohttp.ClientSession() as session:
         await asyncio.gather(*(get(documento, session) for documento in listaDocumentosTodos))
@@ -108,8 +104,8 @@ async def get(documento, session):
     """accedemos a la API con el videoID, la misma nos devuelve el link al video
 
     Args:
-        documento (Documento): 
-        session (aiohttp.ClientSession()): 
+        documento (object): un objeto que representa un audiovisual 
+        session (aiohttp.ClientSession): la sesion sobre la cual se ejecuta el/los get para obtener el/los links
     """
     try:
         if(documento["tipo"] == 'MOVIE'):
@@ -134,24 +130,31 @@ async def get(documento, session):
         print("No se pudo obtener la url {} debido a {}.".format(url, e.__class__))
     
 
-
-
-def crearSublistas(listas, n):
+def crearSublistas(lista, n):
     """Divide la lista de Audiovisuales en chunks de 100
 
     Args:
-        listas (list): 
-        n (int): 
+        lista (list[object]): lista con todos los Documentos
+        n (int): el tamaño de cada chunk en el que debe ser dividida la lista
 
     """
-    for i in range(0, len(listas), n):
-        yield listas[i:i + n]
+    for i in range(0, len(lista), n):
+        yield lista[i:i + n]
 
+def insertarEnBaseDeDatos():
+    print('Insertando documentos en base de datos...')
+    subListas = crearSublistas(listaDocumentosTodos, chunksLista) # separo en chunks la lista completa de audiovisuales
+    cantidadDocumentos = len(listaDocumentosTodos)
+    documentosInsertados = 0
+    for subLista in subListas:
+        #voy insertando los metadatos en mongoDB de a chunks
+        print('  - Insertando {} / {}'.format(str(len(subLista) + documentosInsertados), str(cantidadDocumentos)))
+        coll.insert_many(subLista)
+        documentosInsertados = documentosInsertados + len(subLista)
 
 #Inicia la ejecucion de codigo
 
-
-principal()
+obtenerMetadataDelApi()
 
 print('cargando links para {} audiovisuales en paralelo... '.format(str(len(listaDocumentosTodos))))
 
@@ -160,23 +163,14 @@ asyncio.run(conseguirLinks(listaDocumentosTodos))
 print('Creando archivo resultado_{}.json...'.format(inicioStr))
 
 with open('resultado_'+inicioStr+'.json', 'w') as f:
-    """Inserto todos los datos en un JSON
+    """Inserto todos los datos en un JSON, w=pis
     """
     json.dump(listaDocumentosTodos, f)
+    f.close()
 
 print(' - Archivo resultado_{}.json creado'.format(inicioStr))
 
-subListas = crearSublistas(listaDocumentosTodos, chunksLista) #Creo las sublistas de audiovisuales
-cantidadDocumentos = len(listaDocumentosTodos)
-documentosInsertados = 0
-
-print('Insertando documentos en base de datos...')
-
-for subLista in subListas:
-    #voy insertando los metadatos en mongoDB de a chunks
-    print('  - Insertando {} / {}'.format(str(len(subLista) + documentosInsertados), str(cantidadDocumentos)))
-    coll.insert_many(subLista)
-    documentosInsertados = documentosInsertados + len(subLista)
+insertarEnBaseDeDatos()
 
 print(' - Todos los documentos se insertaron en la base de datos')
 
@@ -187,4 +181,3 @@ print(' - Fin:    {}'.format(fin))
 print(' - Tiempo: {}'.format(fin - inicio))
 
 #   Fin de ejecucion
-
