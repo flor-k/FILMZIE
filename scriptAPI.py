@@ -12,7 +12,6 @@ import os
 
 main.load_dotenv()
 DATABASE_CONNECTION_STRING = os.environ['DATABASE_CONNECTION_STRING']
-
 inicio = datetime.now()
 inicioStr = str(datetime.now().isoformat().replace(':','_'))
 coneccionAlServidor = MongoClient(DATABASE_CONNECTION_STRING)
@@ -92,7 +91,7 @@ def principal():
 
             offset += limit
             print('cargando pagina', 'offset:{} - limit:{} - documentosCreados:{}'.format(str(offset), str(limit), str(len(listaDocumentos))))
-        break
+        
 
 async def conseguirLinks(listaDocumentosTodos):
     """
